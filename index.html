@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>С НОВЫМ ГОДОМ УРАААААА!!!</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Comic Sans MS","Comic Neue",cursive,sans-serif;background:#f0f;cursor:crosshair}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+#bg{position:fixed;inset:0;background-size:90px;image-rendering:pixelated;animation:bgm 4s linear infinite,hue 12s linear infinite}
+@keyframes bgm{to{background-position:90px 90px}}
+#fx{position:fixed;inset:0;z-index:15;pointer-events:none}
+.fl{position:absolute;z-index:2;image-rendering:pixelated;animation:drift 4s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(var(--dx),var(--dy)) rotate(360deg) scale(1.4)}}
+#title{position:fixed;left:50%;top:50%;width:92vw;text-align:center;font-size:min(13vw,16vh);font-weight:900;line-height:1.05;z-index:10;pointer-events:none;animation:shake .7s ease-in-out infinite alternate}
+@keyframes shake{0%{transform:translate(-50%,-50%) rotate(-1.5deg) scale(1)}100%{transform:translate(-50%,-50%) rotate(1.5deg) scale(1.03)}}
+#title span{display:inline-block;-webkit-text-stroke:3px #000;text-shadow:4px 4px 0 #000,-3px -3px 0 #fff;animation:wob .7s steps(2) infinite alternate}
+@keyframes wob{to{transform:translateY(-.15em) rotate(8deg) scale(1.2)}}
+.band{position:fixed;left:0;right:0;white-space:nowrap;overflow:hidden;font-size:5vmin;font-weight:bold;color:red;background:yellow;border:4px dashed lime;z-index:8}
+.band i{display:inline-block;font-style:normal;padding-left:100%;animation:sc 16s linear infinite}
+@keyframes sc{to{transform:translateX(-100%)}}
+#likebox{position:fixed;right:12px;bottom:calc(8vmin + 16px);z-index:20;width:min(52vw,330px);font-family:"Times New Roman",serif;background:#c0c0c0;border:4px outset #fff;padding:8px;text-align:center;box-shadow:4px 4px 0 #000}
+#likebox small{display:block;color:#00f;text-decoration:underline;font-size:18px;margin-bottom:6px}
+#like{width:100%;height:min(36vw,210px);font:bold min(8vw,42px) "Times New Roman",serif;color:#000;background:#c0c0c0;border:7px outset #fff;border-radius:0;cursor:pointer}
+#like:active{border-style:inset}
+#cntbox{margin-top:8px;background:#000;color:#f00;font:bold 24px "Courier New",monospace;border:3px inset #888;padding:4px}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="band" style="top:0"><i>🎄 СДЕЛАЛА САМИРА 🎄 СДЕЛАЛА САМИРА 🎄 СДЕЛАЛА САМИРА 🎄</i></div>
+<div class="band" style="bottom:0;color:blue;background:cyan"><i>⭐ СДЕЛАЛА САМИРА ⭐ СДЕЛАЛА САМИРА ⭐ СДЕЛАЛА САМИРА ⭐</i></div>
+<div id="title"></div>
+<canvas id="fx"></canvas>
+<div id="likebox"><small>нажми если понравилось)))</small><button id="like">👍 ЛАЙК<br>(жми сюда)</button><div id="cntbox">Лайков: <b id="cnt">0</b></div></div>
+
+<script>
+const R=(a,b)=>Math.random()*(b-a)+a, pick=a=>a[Math.random()*a.length|0];
+const COL=['#f0f','#0ff','#ff0','#0f0','#f00','#00f','#fff','#f80'];
+const EM=['🎄','🎅','🍾','🎆','⭐','🎁','🥂','❄️','🦌','🍊','🧦','🔔','🐻','🥔','🐸','😎','🍉','🧸'];
+
+// ====== ГИФКИ ======
+// Положи гифку рядом с index.html и впиши имя файла сюда, например: 'cat.gif'
+// Можно и ссылку на гифку (должна заканчиваться на .gif)
+const GIFS=[
+  // 'cat.gif',
+  // 'party.gif',
+];
+// ===================
+
+// Делаем ОЧЕНЬ плохую картинку: крошечный эмодзи 24x24, сжатый в JPEG с качеством 3%
+function crap(e,s=24){
+  const c=document.createElement('canvas');c.width=c.height=s;
+  const x=c.getContext('2d');
+  x.fillStyle=pick(COL);x.fillRect(0,0,s,s);
+  x.font=Math.round(s*.85)+'px sans-serif';x.textAlign='center';x.textBaseline='middle';
+  x.fillText(e,s/2,s/2+1);
+  return c.toDataURL('image/jpeg',0.03);
+}
+document.getElementById('bg').style.backgroundImage='url('+crap('🎄')+')';
+
+function floater(src,w){
+  const im=new Image();im.src=src;im.className='fl';
+  im.style.left=R(0,90)+'vw';im.style.top=R(5,80)+'vh';im.style.width=w+'px';
+  im.style.setProperty('--dx',R(-40,40)+'vw');im.style.setProperty('--dy',R(-40,40)+'vh');
+  im.style.animationDuration=R(5,11)+'s';
+  document.body.appendChild(im);
+}
+for(let i=0;i<45;i++)floater(crap(pick(EM),pick([10,14,18,24])),R(50,190));
+GIFS.forEach(g=>{floater(g,R(150,260));floater(g,R(100,180))});
+
+// Заголовок по буквам
+const title=document.getElementById('title'),letters=[];
+'С НОВЫМ ГОДОМ УРАААААА!!!'.split('').forEach(ch=>{
+  if(ch===' '){title.appendChild(document.createTextNode(' '));return}
+  const s=document.createElement('span');s.textContent=ch;
+  s.style.color=pick(COL);s.style.animationDelay=R(0,.7)+'s';
+  title.appendChild(s);letters.push(s);
+});
+
+// Пиксели и блёстки
+const cv=document.getElementById('fx'),g=cv.getContext('2d');let W,H;
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
+const P=[];
+function burst(x,y,n,sp=8){
+  for(let i=0;i<n;i++){const a=R(0,6.283),v=R(1,sp);
+    P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(4,16)|0,c:pick(COL),l:R(40,100),t:Math.random()<.3,gr:.15});}
+}
+function snow(){P.push({x:R(0,W),y:-10,vx:R(-1,1),vy:R(1,4),s:R(4,14)|0,c:pick(COL),l:400,t:Math.random()<.4,gr:0})}
+function frame(){
+  g.clearRect(0,0,W,H);
+  if(P.length<900)snow();
+  for(let i=P.length-1;i>=0;i--){
+    const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vy+=p.gr;p.l--;
+    if(p.l<=0||p.y>H+20){P.splice(i,1);continue}
+    g.fillStyle=p.c;
+    if(p.t){g.font=p.s*2+'px sans-serif';g.fillText('✦',p.x|0,p.y|0)}
+    else g.fillRect(p.x|0,p.y|0,p.s,p.s); // квадратные пиксели
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+
+// Буквы периодически "рассыпаются" на пиксели
+setInterval(()=>{
+  letters.forEach(l=>{
+    if(Math.random()<.25){
+      const r=l.getBoundingClientRect();
+      burst(r.left+r.width/2,r.top+r.height/2,25,6);
+      l.style.visibility='hidden';
+      setTimeout(()=>l.style.visibility='',R(200,600));
+    }
+  });
+},1400);
+
+addEventListener('pointermove',e=>burst(e.clientX,e.clientY,3,3));
+addEventListener('pointerdown',e=>burst(e.clientX,e.clientY,60,10));
+
+// Лайк (счётчик хранится только в браузере самого человека)
+let n=0;try{n=+localStorage.getItem('likes')||0}catch(e){}
+const cnt=document.getElementById('cnt');cnt.textContent=n;
+document.getElementById('like').onclick=()=>{
+  n++;try{localStorage.setItem('likes',n)}catch(e){}
+  cnt.textContent=n;
+  burst(innerWidth-150,innerHeight-150,150,15);
+};
+</script>
+</body>
+</html>
